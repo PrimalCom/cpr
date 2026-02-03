@@ -6,7 +6,7 @@ import guitars from '@/data/demo-guitars'
 
 export default function GuitarRecommendation({ id }: { id: string }) {
   const navigate = useNavigate()
-  const guitar = guitars.find((guitar) => guitar.id === +id)
+  const guitar = guitars.find((g) => g.id === +id)
   if (!guitar) {
     return null
   }

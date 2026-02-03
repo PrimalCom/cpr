@@ -141,6 +141,7 @@ Multi-provider AI support with adapter pattern:
 - See `src/routes/demo/api.ai.chat.ts` for implementation pattern
 
 Key concepts:
+
 - Server tools execute on backend (e.g., database queries)
 - Client tools render custom UI components
 - Use `toServerSentEventsResponse()` for streaming
@@ -157,6 +158,7 @@ Key concepts:
 ### UI Components (Shadcn)
 
 Add new components using:
+
 ```bash
 pnpm dlx shadcn@latest add <component-name>
 ```

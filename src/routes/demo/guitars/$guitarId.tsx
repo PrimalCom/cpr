@@ -4,8 +4,8 @@ import guitars from '@/data/demo-guitars'
 
 export const Route = createFileRoute('/demo/guitars/$guitarId')({
   component: RouteComponent,
-  loader: async ({ params }) => {
-    const guitar = guitars.find((guitar) => guitar.id === +params.guitarId)
+  loader: ({ params }) => {
+    const guitar = guitars.find((g) => g.id === +params.guitarId)
     if (!guitar) {
       throw new Error('Guitar not found')
     }

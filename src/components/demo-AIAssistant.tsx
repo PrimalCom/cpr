@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { Store } from '@tanstack/store'
 
-import { Send, X, ChevronRight, BotIcon } from 'lucide-react'
+import { BotIcon, ChevronRight, Send, X } from 'lucide-react'
 import { Streamdown } from 'streamdown'
 
-import { useGuitarRecommendationChat } from '@/lib/demo-ai-hook'
-import type { ChatMessages } from '@/lib/demo-ai-hook'
-
 import GuitarRecommendation from './demo-GuitarRecommendation'
+import type { ChatMessages } from '@/lib/demo-ai-hook'
+import { useGuitarRecommendationChat } from '@/lib/demo-ai-hook'
+
 
 export const showAIAssistant = new Store(false)
 
@@ -62,12 +62,11 @@ function Messages({ messages }: { messages: ChatMessages }) {
             }
             if (
               part.type === 'tool-call' &&
-              part.name === 'recommendGuitar' &&
               part.output
             ) {
               return (
                 <div key={part.id} className="max-w-[80%] mx-auto">
-                  <GuitarRecommendation id={String(part.output?.id)} />
+                  <GuitarRecommendation id={String(part.output.id)} />
                 </div>
               )
             }

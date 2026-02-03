@@ -1,0 +1,39 @@
+{
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Read(./**)",
+      "Write(./**)",
+      "Edit(./**)",
+      "Glob(./**)",
+      "Grep(./**)",
+      "Read(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Write(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Edit(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Glob(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Grep(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Read(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/.auto-claude/specs/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Write(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/.auto-claude/specs/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Edit(/Users/james/www/cpr/.auto-claude/worktrees/tasks/001-based-on-plan-md-work-out-the-features-as-mentione/.auto-claude/specs/001-based-on-plan-md-work-out-the-features-as-mentione/**)",
+      "Read(/Users/james/www/cpr/.auto-claude/**)",
+      "Write(/Users/james/www/cpr/.auto-claude/**)",
+      "Edit(/Users/james/www/cpr/.auto-claude/**)",
+      "Glob(/Users/james/www/cpr/.auto-claude/**)",
+      "Grep(/Users/james/www/cpr/.auto-claude/**)",
+      "Bash(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "mcp__context7__resolve-library-id(*)",
+      "mcp__context7__get-library-docs(*)",
+      "mcp__graphiti-memory__search_nodes(*)",
+      "mcp__graphiti-memory__search_facts(*)",
+      "mcp__graphiti-memory__add_episode(*)",
+      "mcp__graphiti-memory__get_episodes(*)",
+      "mcp__graphiti-memory__get_entity_edge(*)"
+    ]
+  }
+}

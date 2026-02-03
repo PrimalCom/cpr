@@ -42,7 +42,7 @@ function BetterAuthDemo() {
             ) : (
               <div className="h-10 w-10 bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center">
                 <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                  {session.user.name?.charAt(0).toUpperCase() || 'U'}
+                  {session.user.name.charAt(0).toUpperCase() || 'U'}
                 </span>
               </div>
             )}

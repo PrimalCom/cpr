@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
-  Send,
-  Square,
+  Loader2,
   Mic,
   MicOff,
+  Send,
+  Square,
   Volume2,
   VolumeX,
-  Loader2,
 } from 'lucide-react'
 import { Streamdown } from 'streamdown'
 
-import { useGuitarRecommendationChat } from '@/lib/demo-ai-hook'
 import type { ChatMessages } from '@/lib/demo-ai-hook'
+import { useGuitarRecommendationChat } from '@/lib/demo-ai-hook'
 import { useAudioRecorder } from '@/hooks/demo-useAudioRecorder'
 import { useTTS } from '@/hooks/demo-useTTS'
 
@@ -123,14 +123,10 @@ function Messages({
                       )
                     }
                     // Guitar recommendation card
-                    if (
-                      part.type === 'tool-call' &&
-                      part.name === 'recommendGuitar' &&
-                      part.output
-                    ) {
+                    if (part.type === 'tool-call') {
                       return (
                         <div key={part.id} className="max-w-[80%] mx-auto">
-                          <GuitarRecommendation id={String(part.output?.id)} />
+                          <GuitarRecommendation id={String(part.output.id)} />
                         </div>
                       )
                     }
@@ -282,6 +278,6 @@ function ChatPage() {
   )
 }
 
-export const Route = createFileRoute('/demo/ai/chat')({
+export const Route = createFileRoute('/demo/ai-chat')({
   component: ChatPage,
 })

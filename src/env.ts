@@ -4,6 +4,8 @@ import { z } from 'zod'
 export const env = createEnv({
   server: {
     SERVER_URL: z.string().url().optional(),
+    DICOM_STORAGE_PATH: z.string().default('./data/dicom'),
+    MAX_UPLOAD_SIZE_MB: z.coerce.number().default(2048),
   },
 
   /**

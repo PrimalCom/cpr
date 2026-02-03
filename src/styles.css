@@ -136,3 +136,242 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+/* Medical Imaging Viewer Styles */
+@layer components {
+  /* Viewport Layout - 2x2 Grid */
+  .viewer-layout {
+    @apply h-screen w-full overflow-hidden;
+  }
+
+  .viewer-grid {
+    @apply grid grid-cols-2 grid-rows-2 gap-1 bg-gray-900 p-1;
+    height: calc(100vh - 60px); /* Account for toolbar height */
+  }
+
+  /* Viewport Containers */
+  .viewport-container {
+    @apply relative overflow-hidden rounded-sm border border-gray-800 bg-black;
+    @apply hover:border-gray-700 transition-colors;
+    min-height: 200px;
+    min-width: 200px;
+  }
+
+  .viewport-container:focus-within {
+    @apply border-blue-600 ring-2 ring-blue-500/50;
+  }
+
+  /* Viewport Labels */
+  .viewport-label {
+    @apply absolute left-2 top-2 z-50 rounded bg-gray-900/80 px-2 py-1;
+    @apply text-xs font-semibold text-gray-300 backdrop-blur-sm;
+    @apply pointer-events-none select-none;
+  }
+
+  /* Viewport Canvas - Cornerstone/VTK.js rendering targets */
+  .viewport-canvas {
+    @apply h-full w-full;
+    touch-action: none; /* Prevent default touch gestures */
+  }
+
+  /* Measurement Overlays */
+  .measurement-overlay {
+    @apply absolute inset-0 pointer-events-none z-40;
+  }
+
+  .measurement-overlay svg {
+    @apply h-full w-full;
+  }
+
+  /* Allow interaction with specific overlay elements */
+  .measurement-overlay.interactive {
+    @apply pointer-events-auto;
+  }
+
+  /* Measurement Annotations */
+  .measurement-annotation {
+    @apply rounded bg-black/80 px-2 py-1 text-xs text-white backdrop-blur-sm;
+    @apply border border-yellow-500/50;
+  }
+
+  /* Centerline Overlay */
+  .centerline-overlay {
+    @apply absolute inset-0 z-30;
+    pointer-events: none;
+  }
+
+  .centerline-overlay.interactive {
+    @apply pointer-events-auto;
+  }
+
+  .centerline-path {
+    @apply stroke-green-400 fill-none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .centerline-path.outside-lumen {
+    @apply stroke-red-500;
+  }
+
+  /* Control Points */
+  .control-point {
+    @apply cursor-grab active:cursor-grabbing;
+    @apply transition-transform hover:scale-110;
+  }
+
+  .control-point.start {
+    @apply fill-green-500 stroke-white;
+    stroke-width: 2;
+  }
+
+  .control-point.end {
+    @apply fill-blue-500 stroke-white;
+    stroke-width: 2;
+  }
+
+  .control-point.control {
+    @apply fill-yellow-400 stroke-white;
+    stroke-width: 2;
+  }
+
+  /* Segmentation Overlays */
+  .segmentation-overlay {
+    @apply absolute inset-0 pointer-events-none z-35;
+  }
+
+  .segmentation-contour {
+    @apply fill-none;
+    stroke-width: 2;
+  }
+
+  .segmentation-contour.lumen {
+    @apply stroke-yellow-400;
+  }
+
+  .segmentation-contour.vessel-wall {
+    @apply stroke-red-400;
+  }
+
+  /* Cursor Crosshairs */
+  .crosshair {
+    @apply stroke-cyan-400 fill-none;
+    stroke-width: 1;
+    opacity: 0.8;
+  }
+
+  /* Viewport Info Overlays */
+  .viewport-info {
+    @apply absolute bottom-2 left-2 z-40 rounded bg-black/70 px-2 py-1;
+    @apply text-xs text-gray-300 backdrop-blur-sm;
+    @apply pointer-events-none select-none;
+  }
+
+  /* Measurement Panel */
+  .measurement-panel {
+    @apply flex flex-col gap-2 rounded-lg border border-gray-800 bg-gray-900 p-4;
+    @apply max-h-96 overflow-y-auto;
+  }
+
+  .measurement-item {
+    @apply flex items-center justify-between gap-2 rounded border border-gray-700 bg-gray-800 p-2;
+    @apply text-sm;
+  }
+
+  .measurement-label {
+    @apply font-medium text-gray-300;
+  }
+
+  .measurement-value {
+    @apply font-mono text-blue-400;
+  }
+
+  /* Loading States */
+  .viewport-loading {
+    @apply flex h-full items-center justify-center;
+  }
+
+  .viewport-spinner {
+    @apply animate-spin h-8 w-8 text-blue-500;
+  }
+
+  /* Error States */
+  .viewport-error {
+    @apply flex h-full flex-col items-center justify-center gap-2 p-4;
+    @apply text-center text-sm text-red-400;
+  }
+
+  /* Responsive Grid - Stack vertically on small screens */
+  @media (max-width: 768px) {
+    .viewer-grid {
+      @apply grid-cols-1 grid-rows-4;
+      height: auto;
+    }
+
+    .viewport-container {
+      min-height: 300px;
+    }
+  }
+
+  /* Responsive Grid - 1x2 layout on medium screens */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .viewer-grid {
+      @apply grid-cols-1 grid-rows-2;
+    }
+
+    .viewport-container {
+      min-height: 400px;
+    }
+  }
+
+  /* High DPI displays - ensure crisp rendering */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .viewport-canvas {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+  }
+
+  /* Dark mode adjustments for medical imaging */
+  .dark .viewport-container {
+    @apply bg-gray-950;
+  }
+
+  .dark .viewport-label {
+    @apply bg-gray-950/90;
+  }
+
+  .dark .measurement-panel {
+    @apply bg-gray-950 border-gray-700;
+  }
+
+  /* Window/Level Indicator */
+  .window-level-indicator {
+    @apply absolute top-2 right-2 z-40 rounded bg-black/70 px-2 py-1;
+    @apply text-xs text-gray-300 backdrop-blur-sm;
+    @apply pointer-events-none select-none;
+  }
+
+  /* Vessel Selector Styles */
+  .vessel-button {
+    @apply relative overflow-hidden transition-all;
+  }
+
+  .vessel-button.active::before {
+    content: '';
+    @apply absolute inset-0 bg-current opacity-10;
+  }
+
+  .vessel-button.LAD {
+    @apply text-red-500;
+  }
+
+  .vessel-button.LCX {
+    @apply text-green-500;
+  }
+
+  .vessel-button.RCA {
+    @apply text-blue-500;
+  }
+}

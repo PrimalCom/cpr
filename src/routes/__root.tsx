@@ -8,8 +8,6 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
 
-import StoreDevtools from '../lib/demo-store-devtools'
-
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import AiDevtools from '../lib/ai-devtools'
@@ -33,7 +31,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Coronary Curved MPR',
       },
     ],
     links: [
@@ -65,7 +63,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               name: 'Tanstack Router',
               render: <TanStackRouterDevtoolsPanel />,
             },
-            StoreDevtools,
             TanStackQueryDevtools,
             AiDevtools,
           ]}

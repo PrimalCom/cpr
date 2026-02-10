@@ -1,4 +1,5 @@
 import { config } from 'dotenv'
+
 config({ path: ['.env.local', '.env'] })
 
 async function seed() {

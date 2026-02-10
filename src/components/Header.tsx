@@ -2,12 +2,12 @@ import { Link } from '@tanstack/react-router'
 
 import { useState } from 'react'
 import {
+  Activity,
   Home,
   ImageIcon,
   Menu,
   Upload,
   X,
-  Activity,
 } from 'lucide-react'
 import BetterAuthHeader from '../integrations/better-auth/header-user.tsx'
 

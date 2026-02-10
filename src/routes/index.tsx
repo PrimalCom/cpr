@@ -1,11 +1,11 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   Activity,
-  Upload,
   Database,
+  Layers3,
   Ruler,
   Share2,
-  Layers3,
+  Upload,
 } from 'lucide-react'
 
 export const Route = createFileRoute('/')({ component: HomePage })

@@ -15,7 +15,7 @@ interface DemoModelSelectorProps {
 
 function DemoModelSelector({ className }: DemoModelSelectorProps) {
   const navigate = useNavigate()
-  const [demos, setDemos] = React.useState<DemoModel[]>([])
+  const [demos, setDemos] = React.useState<Array<DemoModel>>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const [loadingModel, setLoadingModel] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)

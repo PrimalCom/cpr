@@ -36,7 +36,7 @@ export const Route = createFileRoute('/api/imaging/demos')({
         try {
           const manifestPath = path.join(DEMOS_DIR, 'manifest.json')
           const manifestRaw = await fs.readFile(manifestPath, 'utf-8')
-          const manifest: DemoManifestEntry[] = JSON.parse(manifestRaw)
+          const manifest: Array<DemoManifestEntry> = JSON.parse(manifestRaw)
 
           const demos = manifest.map((entry) => ({
             name: entry.name,
@@ -94,7 +94,7 @@ export const Route = createFileRoute('/api/imaging/demos')({
           // Load manifest and find the requested demo
           const manifestPath = path.join(DEMOS_DIR, 'manifest.json')
           const manifestRaw = await fs.readFile(manifestPath, 'utf-8')
-          const manifest: DemoManifestEntry[] = JSON.parse(manifestRaw)
+          const manifest: Array<DemoManifestEntry> = JSON.parse(manifestRaw)
 
           const demo = manifest.find((entry) => entry.name === name)
           if (!demo) {

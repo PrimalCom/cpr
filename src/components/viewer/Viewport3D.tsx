@@ -19,11 +19,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { CenterlineEditor } from './CenterlineEditor'
 import type { Point3D } from '@/lib/imaging/centerline'
-import {
-  type SegmentationMetadata,
-  type SurfaceRenderer,
-  type VesselType,
-  createSurfaceRenderer} from '@/lib/vtk/surface-renderer';
+import type { SegmentationMetadata, SurfaceRenderer, VesselType } from '@/lib/vtk/surface-renderer'
+import { createSurfaceRenderer } from '@/lib/vtk/surface-renderer'
 import { cn } from '@/lib/utils'
 import { VTKInitError, initializeVTK } from '@/lib/vtk/init'
 import { createRayCaster } from '@/lib/vtk/ray-caster'

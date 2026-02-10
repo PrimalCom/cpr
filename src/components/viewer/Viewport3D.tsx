@@ -19,9 +19,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { CenterlineEditor } from './CenterlineEditor'
 import type { Point3D } from '@/lib/imaging/centerline'
-import type {
+import {
   type SegmentationMetadata,
-  SurfaceRenderer,
+  type SurfaceRenderer,
   type VesselType,
   createSurfaceRenderer} from '@/lib/vtk/surface-renderer';
 import { cn } from '@/lib/utils'
@@ -126,26 +126,15 @@ export function Viewport3D({
   })
 
   /**
-   * Initialize VTK.js and create surface renderer
+   * Initialize VTK.js environment (WebGL check etc.)
    */
   useEffect(() => {
     let mounted = true
 
     const init = async () => {
       try {
-        // Initialize VTK.js
         await initializeVTK()
-
-        if (!mounted) return
-
-        // Create surface renderer if container is available
-        if (containerRef.current && !rendererRef.current) {
-          rendererRef.current = createSurfaceRenderer({
-            container: containerRef.current,
-            enableInteraction,
-            backgroundColor,
-          })
-
+        if (mounted) {
           setIsVTKInitialized(true)
         }
       } catch (err) {
@@ -167,7 +156,22 @@ export function Viewport3D({
     return () => {
       mounted = false
     }
-  }, [enableInteraction, backgroundColor])
+  }, [])
+
+  /**
+   * Create surface renderer once VTK is initialized and container is available
+   */
+  useEffect(() => {
+    if (!isVTKInitialized || !containerRef.current || rendererRef.current) {
+      return
+    }
+
+    rendererRef.current = createSurfaceRenderer({
+      container: containerRef.current,
+      enableInteraction,
+      backgroundColor,
+    })
+  }, [isVTKInitialized, enableInteraction, backgroundColor])
 
   /**
    * Render vessel segmentations
@@ -367,41 +371,71 @@ export function Viewport3D({
     }
   }, [])
 
-  /**
-   * Render loading state
-   */
-  if (!isCornerstoneInitialized || !isVTKInitialized) {
-    return (
-      <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          className,
-        )}
-      >
-        <div className="flex flex-col items-center gap-3 text-gray-400">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-600 border-t-blue-500" />
-          <div className="text-sm">{loadingMessage}</div>
-        </div>
-      </div>
-    )
-  }
+  const isLoading = !isCornerstoneInitialized || !isVTKInitialized
+  const error = vtkError || cornerstoneError
+  const isEmpty = !segmentations || segmentations.size === 0
+  const isReady = !isLoading && !error
 
   /**
-   * Render error state
+   * Always render the container div so containerRef is available for VTK init.
+   * Loading, error, and empty states are overlaid on top.
    */
-  const error = vtkError || cornerstoneError
-  if (error) {
-    return (
+  return (
+    <div className={cn('relative h-full w-full', className)}>
+      {/* VTK.js rendering container - always mounted for ref availability */}
       <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          className,
-        )}
-      >
-        <div className="flex max-w-md flex-col gap-3 rounded-lg border border-red-900 bg-red-950/50 p-6 text-red-300">
-          <div className="flex items-center gap-2 text-lg font-semibold">
+        ref={containerRef}
+        className="h-full w-full"
+        onClick={isReady && enableCenterlineCreation ? handleViewportClick : undefined}
+        style={
+          isReady && enableCenterlineCreation && centerline.mode !== 'idle'
+            ? { cursor: 'crosshair' }
+            : undefined
+        }
+      />
+
+      {/* Loading overlay */}
+      {isLoading && !error && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-600 border-t-blue-500" />
+            <div className="text-sm">{loadingMessage}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex max-w-md flex-col gap-3 rounded-lg border border-red-900 bg-red-950/50 p-6 text-red-300">
+            <div className="flex items-center gap-2 text-lg font-semibold">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Initialization Error
+            </div>
+            <div className="whitespace-pre-wrap text-sm">{error.message}</div>
+            <div className="text-xs text-red-400">Error code: {error.code}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty state overlay */}
+      {isReady && isEmpty && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2 text-gray-500">
             <svg
-              className="h-5 w-5"
+              className="h-12 w-12"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -409,72 +443,20 @@ export function Viewport3D({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                strokeWidth={1.5}
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
-            Initialization Error
-          </div>
-          <div className="whitespace-pre-wrap text-sm">{error.message}</div>
-          <div className="text-xs text-red-400">Error code: {error.code}</div>
-        </div>
-      </div>
-    )
-  }
-
-  /**
-   * Render empty state (no segmentations)
-   */
-  if (!segmentations || segmentations.size === 0) {
-    return (
-      <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          className,
-        )}
-      >
-        <div className="flex flex-col items-center gap-2 text-gray-500">
-          <svg
-            className="h-12 w-12"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-            />
-          </svg>
-          <div className="text-sm">No vessel segmentation loaded</div>
-          <div className="text-xs text-gray-600">
-            Upload DICOM series with segmentation masks to view 3D vessels
+            <div className="text-sm">No vessel segmentation loaded</div>
+            <div className="text-xs text-gray-600">
+              Upload DICOM series with segmentation masks to view 3D vessels
+            </div>
           </div>
         </div>
-      </div>
-    )
-  }
-
-  /**
-   * Render 3D viewport
-   */
-  return (
-    <div className={cn('relative h-full w-full', className)}>
-      {/* VTK.js rendering container with click handler for centerline creation */}
-      <div
-        ref={containerRef}
-        className="h-full w-full"
-        onClick={enableCenterlineCreation ? handleViewportClick : undefined}
-        style={
-          enableCenterlineCreation && centerline.mode !== 'idle'
-            ? { cursor: 'crosshair' }
-            : undefined
-        }
-      />
+      )}
 
       {/* Centerline editor overlay */}
-      {enableCenterlineCreation && centerline.mode !== 'idle' && (
+      {isReady && enableCenterlineCreation && centerline.mode !== 'idle' && (
         <CenterlineEditor
           centerline={centerline}
           viewportElement={containerRef.current}
@@ -485,14 +467,14 @@ export function Viewport3D({
       )}
 
       {/* Active vessel indicator */}
-      {activeVessel && (
+      {isReady && activeVessel && (
         <div className="absolute bottom-2 right-2 rounded bg-gray-900/80 px-3 py-1 text-xs font-medium text-gray-300 backdrop-blur-sm">
           Active: {activeVessel}
         </div>
       )}
 
       {/* Interaction hint */}
-      {enableInteraction && !enableCenterlineCreation && (
+      {isReady && enableInteraction && !enableCenterlineCreation && (
         <div className="absolute bottom-2 left-2 rounded bg-gray-900/80 px-3 py-1 text-xs text-gray-400 backdrop-blur-sm">
           <div className="flex flex-col gap-0.5">
             <div>Left-click + drag: Rotate</div>
@@ -503,7 +485,7 @@ export function Viewport3D({
       )}
 
       {/* Centerline creation hint */}
-      {enableCenterlineCreation && centerline.mode === 'awaiting-start' && (
+      {isReady && enableCenterlineCreation && centerline.mode === 'awaiting-start' && (
         <div className="absolute left-4 top-4 rounded-lg border border-blue-700 bg-blue-950/90 px-3 py-2 text-sm text-blue-200 backdrop-blur-sm">
           Click on vessel surface to set start point
         </div>

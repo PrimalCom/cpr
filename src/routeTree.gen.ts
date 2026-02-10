@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as StudiesRouteImport } from './routes/studies'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ViewerStudyIdRouteImport } from './routes/viewer.$studyId'
 import { Route as ApiImagingUploadRouteImport } from './routes/api/imaging/upload'
 import { Route as ApiImagingMprRouteImport } from './routes/api/imaging/mpr'
 import { Route as ApiImagingMeasurementsRouteImport } from './routes/api/imaging/measurements'
+import { Route as ApiImagingDemosRouteImport } from './routes/api/imaging/demos'
 import { Route as ApiImagingCenterlineRouteImport } from './routes/api/imaging/centerline'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiImagingSeriesSeriesIdRouteImport } from './routes/api/imaging/series.$seriesId'
@@ -29,6 +31,11 @@ const UploadRoute = UploadRouteImport.update({
 const StudiesRoute = StudiesRouteImport.update({
   id: '/studies',
   path: '/studies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -56,6 +63,11 @@ const ApiImagingMeasurementsRoute = ApiImagingMeasurementsRouteImport.update({
   path: '/api/imaging/measurements',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiImagingDemosRoute = ApiImagingDemosRouteImport.update({
+  id: '/api/imaging/demos',
+  path: '/api/imaging/demos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiImagingCenterlineRoute = ApiImagingCenterlineRouteImport.update({
   id: '/api/imaging/centerline',
   path: '/api/imaging/centerline',
@@ -81,11 +93,13 @@ const ApiImagingSegmentationIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/studies': typeof StudiesRoute
   '/upload': typeof UploadRoute
   '/viewer/$studyId': typeof ViewerStudyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/imaging/centerline': typeof ApiImagingCenterlineRoute
+  '/api/imaging/demos': typeof ApiImagingDemosRoute
   '/api/imaging/measurements': typeof ApiImagingMeasurementsRoute
   '/api/imaging/mpr': typeof ApiImagingMprRoute
   '/api/imaging/upload': typeof ApiImagingUploadRoute
@@ -94,11 +108,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/studies': typeof StudiesRoute
   '/upload': typeof UploadRoute
   '/viewer/$studyId': typeof ViewerStudyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/imaging/centerline': typeof ApiImagingCenterlineRoute
+  '/api/imaging/demos': typeof ApiImagingDemosRoute
   '/api/imaging/measurements': typeof ApiImagingMeasurementsRoute
   '/api/imaging/mpr': typeof ApiImagingMprRoute
   '/api/imaging/upload': typeof ApiImagingUploadRoute
@@ -108,11 +124,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/studies': typeof StudiesRoute
   '/upload': typeof UploadRoute
   '/viewer/$studyId': typeof ViewerStudyIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/imaging/centerline': typeof ApiImagingCenterlineRoute
+  '/api/imaging/demos': typeof ApiImagingDemosRoute
   '/api/imaging/measurements': typeof ApiImagingMeasurementsRoute
   '/api/imaging/mpr': typeof ApiImagingMprRoute
   '/api/imaging/upload': typeof ApiImagingUploadRoute
@@ -123,11 +141,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/studies'
     | '/upload'
     | '/viewer/$studyId'
     | '/api/auth/$'
     | '/api/imaging/centerline'
+    | '/api/imaging/demos'
     | '/api/imaging/measurements'
     | '/api/imaging/mpr'
     | '/api/imaging/upload'
@@ -136,11 +156,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/studies'
     | '/upload'
     | '/viewer/$studyId'
     | '/api/auth/$'
     | '/api/imaging/centerline'
+    | '/api/imaging/demos'
     | '/api/imaging/measurements'
     | '/api/imaging/mpr'
     | '/api/imaging/upload'
@@ -149,11 +171,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/login'
     | '/studies'
     | '/upload'
     | '/viewer/$studyId'
     | '/api/auth/$'
     | '/api/imaging/centerline'
+    | '/api/imaging/demos'
     | '/api/imaging/measurements'
     | '/api/imaging/mpr'
     | '/api/imaging/upload'
@@ -163,11 +187,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
   StudiesRoute: typeof StudiesRoute
   UploadRoute: typeof UploadRoute
   ViewerStudyIdRoute: typeof ViewerStudyIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiImagingCenterlineRoute: typeof ApiImagingCenterlineRoute
+  ApiImagingDemosRoute: typeof ApiImagingDemosRoute
   ApiImagingMeasurementsRoute: typeof ApiImagingMeasurementsRoute
   ApiImagingMprRoute: typeof ApiImagingMprRoute
   ApiImagingUploadRoute: typeof ApiImagingUploadRoute
@@ -189,6 +215,13 @@ declare module '@tanstack/react-router' {
       path: '/studies'
       fullPath: '/studies'
       preLoaderRoute: typeof StudiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -226,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiImagingMeasurementsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/imaging/demos': {
+      id: '/api/imaging/demos'
+      path: '/api/imaging/demos'
+      fullPath: '/api/imaging/demos'
+      preLoaderRoute: typeof ApiImagingDemosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/imaging/centerline': {
       id: '/api/imaging/centerline'
       path: '/api/imaging/centerline'
@@ -259,11 +299,13 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   StudiesRoute: StudiesRoute,
   UploadRoute: UploadRoute,
   ViewerStudyIdRoute: ViewerStudyIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiImagingCenterlineRoute: ApiImagingCenterlineRoute,
+  ApiImagingDemosRoute: ApiImagingDemosRoute,
   ApiImagingMeasurementsRoute: ApiImagingMeasurementsRoute,
   ApiImagingMprRoute: ApiImagingMprRoute,
   ApiImagingUploadRoute: ApiImagingUploadRoute,

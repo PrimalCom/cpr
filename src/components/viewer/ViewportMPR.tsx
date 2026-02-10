@@ -368,45 +368,74 @@ export function ViewportMPR({
     }
   }, [viewportId])
 
-  /**
-   * Render loading state
-   */
-  if (!isCornerstoneInitialized || !isViewportInitialized || isLoadingVolume) {
-    return (
-      <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          className,
-        )}
-      >
-        <div className="flex flex-col items-center gap-3 text-gray-400">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-600 border-t-blue-500" />
-          <div className="text-sm">{loadingMessage}</div>
-          {isPreview && (
-            <div className="text-xs text-gray-500">
-              (Preview - low resolution)
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  }
+  const isLoading = !isCornerstoneInitialized || !isViewportInitialized || isLoadingVolume
+  const isReady = !isLoading && !cornerstoneError
 
   /**
-   * Render error state
+   * Always render the container div so containerRef is available for Cornerstone init.
+   * Loading, error, and empty states are overlaid on top.
    */
-  if (cornerstoneError) {
-    return (
+  return (
+    <div className={cn('relative h-full w-full', className)}>
+      {/* Cornerstone rendering container - always mounted for ref availability */}
       <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          className,
-        )}
-      >
-        <div className="flex max-w-md flex-col gap-3 rounded-lg border border-red-900 bg-red-950/50 p-6 text-red-300">
-          <div className="flex items-center gap-2 text-lg font-semibold">
+        ref={containerRef}
+        className="h-full w-full"
+        onClick={isReady && enableInteraction ? handleViewportClick : undefined}
+        style={isReady && enableInteraction ? { cursor: 'crosshair' } : undefined}
+      />
+
+      {/* Loading overlay */}
+      {isLoading && !cornerstoneError && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-600 border-t-blue-500" />
+            <div className="text-sm">{loadingMessage}</div>
+            {isPreview && (
+              <div className="text-xs text-gray-500">
+                (Preview - low resolution)
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {cornerstoneError && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex max-w-md flex-col gap-3 rounded-lg border border-red-900 bg-red-950/50 p-6 text-red-300">
+            <div className="flex items-center gap-2 text-lg font-semibold">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Initialization Error
+            </div>
+            <div className="whitespace-pre-wrap text-sm">
+              {cornerstoneError.message}
+            </div>
+            <div className="text-xs text-red-400">
+              Error code: {cornerstoneError.code}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Empty state overlay */}
+      {isReady && !mprVolume && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2 text-gray-500">
             <svg
-              className="h-5 w-5"
+              className="h-12 w-12"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -414,79 +443,27 @@ export function ViewportMPR({
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                strokeWidth={1.5}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            Initialization Error
-          </div>
-          <div className="whitespace-pre-wrap text-sm">
-            {cornerstoneError.message}
-          </div>
-          <div className="text-xs text-red-400">
-            Error code: {cornerstoneError.code}
+            <div className="text-sm">No curved MPR generated</div>
+            <div className="text-xs text-gray-600">
+              Create a centerline to generate curved MPR visualization
+            </div>
           </div>
         </div>
-      </div>
-    )
-  }
-
-  /**
-   * Render empty state (no MPR volume)
-   */
-  if (!mprVolume) {
-    return (
-      <div
-        className={cn(
-          'flex h-full w-full items-center justify-center',
-          className,
-        )}
-      >
-        <div className="flex flex-col items-center gap-2 text-gray-500">
-          <svg
-            className="h-12 w-12"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <div className="text-sm">No curved MPR generated</div>
-          <div className="text-xs text-gray-600">
-            Create a centerline to generate curved MPR visualization
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  /**
-   * Render MPR viewport
-   */
-  return (
-    <div className={cn('relative h-full w-full', className)}>
-      {/* Cornerstone rendering container */}
-      <div
-        ref={containerRef}
-        className="h-full w-full"
-        onClick={enableInteraction ? handleViewportClick : undefined}
-        style={enableInteraction ? { cursor: 'crosshair' } : undefined}
-      />
+      )}
 
       {/* Preview indicator */}
-      {isPreview && (
+      {isReady && mprVolume && isPreview && (
         <div className="absolute left-2 top-2 rounded bg-yellow-900/80 px-2 py-1 text-xs font-medium text-yellow-200 backdrop-blur-sm">
           Preview (Low Resolution)
         </div>
       )}
 
       {/* Cursor position indicator */}
-      {cursorSliceIndex !== null &&
+      {isReady && mprVolume && cursorSliceIndex !== null &&
         cursorSliceIndex !== undefined && (
           <div className="absolute bottom-2 right-2 rounded bg-gray-900/80 px-3 py-1 text-xs font-medium text-gray-300 backdrop-blur-sm">
             <div className="flex flex-col gap-0.5">
@@ -506,20 +483,24 @@ export function ViewportMPR({
         )}
 
       {/* Window/Level indicator */}
-      <div className="absolute bottom-2 left-2 rounded bg-gray-900/80 px-3 py-1 text-xs text-gray-400 backdrop-blur-sm">
-        <div className="flex flex-col gap-0.5">
-          <div>
-            W/L: {windowLevel.window} / {windowLevel.level}
+      {isReady && mprVolume && (
+        <div className="absolute bottom-2 left-2 rounded bg-gray-900/80 px-3 py-1 text-xs text-gray-400 backdrop-blur-sm">
+          <div className="flex flex-col gap-0.5">
+            <div>
+              W/L: {windowLevel.window} / {windowLevel.level}
+            </div>
+            <div className="text-gray-500">Click to position cross-section</div>
           </div>
-          <div className="text-gray-500">Click to position cross-section</div>
         </div>
-      </div>
+      )}
 
       {/* Volume info */}
-      <div className="absolute right-2 top-2 rounded bg-gray-900/80 px-2 py-1 text-xs text-gray-400 backdrop-blur-sm">
-        {mprVolume.dimensions[0]} × {mprVolume.dimensions[1]} ×{' '}
-        {mprVolume.dimensions[2]}
-      </div>
+      {isReady && mprVolume && (
+        <div className="absolute right-2 top-2 rounded bg-gray-900/80 px-2 py-1 text-xs text-gray-400 backdrop-blur-sm">
+          {mprVolume.dimensions[0]} × {mprVolume.dimensions[1]} ×{' '}
+          {mprVolume.dimensions[2]}
+        </div>
+      )}
     </div>
   )
 }

@@ -18,7 +18,7 @@ export default function BetterAuthHeader() {
         ) : (
           <div className="h-8 w-8 bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
             <span className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
-              {session.user.name.charAt(0).toUpperCase()}
+              {session.user.name?.charAt(0)?.toUpperCase() || '?'}
             </span>
           </div>
         )}
@@ -33,8 +33,11 @@ export default function BetterAuthHeader() {
   }
 
   return (
-    <div className="h-9 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-500 inline-flex items-center">
-      Not signed in
-    </div>
+    <Link
+      to="/login"
+      className="h-9 px-4 text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg inline-flex items-center transition-colors"
+    >
+      Sign in
+    </Link>
   )
 }

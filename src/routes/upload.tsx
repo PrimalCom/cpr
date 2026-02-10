@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import type { UploadResult } from '@/components/upload/DicomUploader'
 import { DicomUploader } from '@/components/upload/DicomUploader'
+import { DemoModelSelector } from '@/components/upload/DemoModelSelector'
 
 export const Route = createFileRoute('/upload')({
   component: UploadPage,
@@ -14,9 +15,8 @@ function UploadPage() {
     }
   }
 
-  const handleUploadError = (error: string) => {
+  const handleUploadError = (_error: string) => {
     // Error handled by upload component UI
-    void error
   }
 
   return (
@@ -62,39 +62,64 @@ function UploadPage() {
             </div>
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-300 via-purple-300 to-indigo-300 text-transparent bg-clip-text">
-            Upload DICOM Studies
+            Load Study
           </h1>
         </div>
 
-        <div className="space-y-6">
-          <p className="text-indigo-300/80 text-center">
-            Upload DICOM files to create a new study. Drag and drop files or
-            click to browse.
-          </p>
+        <div className="space-y-8">
+          {/* Demo Models Section */}
+          <div>
+            <h2 className="mb-3 text-lg font-semibold text-indigo-200">
+              Demo Models
+            </h2>
+            <p className="mb-4 text-sm text-indigo-300/60">
+              Select a synthetic vessel phantom to open in the viewer.
+            </p>
+            <DemoModelSelector />
+          </div>
 
-          <DicomUploader
-            onUploadComplete={handleUploadComplete}
-            onUploadError={handleUploadError}
-          />
+          {/* Divider */}
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-white/10" />
+            <span className="text-xs font-medium uppercase tracking-wider text-indigo-300/40">
+              or upload your own
+            </span>
+            <div className="h-px flex-1 bg-white/10" />
+          </div>
 
-          <div
-            className="mt-6 rounded-lg border p-4"
-            style={{
-              background: 'rgba(93, 103, 227, 0.05)',
-              borderColor: 'rgba(93, 103, 227, 0.2)',
-            }}
-          >
-            <h3 className="text-lg font-semibold mb-2 text-indigo-200">
-              DICOM Upload Requirements
-            </h3>
-            <ul className="space-y-1 text-sm text-indigo-300/80 list-disc list-inside">
-              <li>Files must be in DICOM Part 10 format (.dcm or .dicom)</li>
-              <li>Multiple files can be uploaded at once</li>
-              <li>
-                Files will be organized by Study UID and Series automatically
-              </li>
-              <li>View uploaded studies on the Studies page after upload</li>
-            </ul>
+          {/* Upload Section */}
+          <div>
+            <h2 className="mb-3 text-lg font-semibold text-indigo-200">
+              Upload DICOM Files
+            </h2>
+            <p className="mb-4 text-sm text-indigo-300/60">
+              Drag and drop DICOM files or click to browse.
+            </p>
+
+            <DicomUploader
+              onUploadComplete={handleUploadComplete}
+              onUploadError={handleUploadError}
+            />
+
+            <div
+              className="mt-4 rounded-lg border p-4"
+              style={{
+                background: 'rgba(93, 103, 227, 0.05)',
+                borderColor: 'rgba(93, 103, 227, 0.2)',
+              }}
+            >
+              <h3 className="text-sm font-semibold mb-2 text-indigo-200">
+                Requirements
+              </h3>
+              <ul className="space-y-1 text-xs text-indigo-300/60 list-disc list-inside">
+                <li>Files must be in DICOM Part 10 format (.dcm or .dicom)</li>
+                <li>Multiple files can be uploaded at once</li>
+                <li>
+                  Files will be organized by Study UID and Series automatically
+                </li>
+                <li>View uploaded studies on the Studies page after upload</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

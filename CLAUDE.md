@@ -23,7 +23,7 @@ This is a full-stack TanStack application demonstrating modern React patterns wi
 ```bash
 # Development
 pnpm install         # Install dependencies
-pnpm dev             # Start dev server on port 3000
+pnpm dev             # Start dev server on port 3008
 
 # Building & Preview
 pnpm build           # Build for production
@@ -206,7 +206,7 @@ Files prefixed with `demo` or `demo-` are examples and can be safely deleted. Th
 
 ## Important Notes
 
-- The dev server runs on port 3000 by default
+- The dev server runs on port 3008 by default
 - Devtools are integrated into a unified panel (bottom-right): Router, Store, Query, AI
 - TypeScript is configured with strict mode
 - ESLint uses `@tanstack/eslint-config`
